@@ -6,155 +6,185 @@
 	</head>
 	<body>
 		<h1>Лабораторная работа №5<br>Нахождение матрицы достижимости</h1>
-		<form method = "post" action = "index.php">
+		<form method = "post" action = "new.php">
 			<table>
 				<tr>
-					<td align = "center">
-						<h2>Ввод данных</h2>
+					<td>
+						<h1>Тип ввода: неориентированная бинарная матрица 4х4</h1>
 					</td>
 				</tr>
 				<tr>
-					<td align = "center">
-						<textarea name = "adjacency" type = "text" placeholder = "Матрица смежности" rows = "9"><?=$_POST['adjacency']?></textarea>
+					<td>
+						<textarea name = "matrix" type = "text" placeholder = "логическая матрица" rows = "4" col = "4" ><?=$_POST['matrix']?></textarea>
 					</td>
 				</tr>
 				<tr>
-					<td align = "center">
+					<td>
 						<input class = "go" type = "submit" value = "Найти матрицу достижимости">
 					</td>
 				</tr>
 			</table>
 		</form>
-		<div class = "code">
-			<?php
-				$m = 1;
-				$n = 1;
-				$good = 1;
-				$adjacency = explode(" ", $_POST['adjacency']);
-				if (implode("",$adjacency) == "") {
-					echo "<p>Введите матрицу смежности</p>";
-					$good--;
-				}
-				if ($adjacency != "") {
-					findTrue($adjacency);
-					$adjacency = beGood($adjacency);
-
-					validation($adjacency);
-					if ($good == 1) {
-						attainability($adjacency);
-					}
-				}
-				
-				function findTrue($g) {
-					global $m, $n;
-					for ($i = 0; $i < count($g); $i++) {
-						if (strlen($g[$i]) <= 1) {
-							$m++;
-						}
-						else {
-							$i =  count($g);
-						}
-					}
-					for ($i = 0; $i < count($g); $i++) {
-						if (strlen($g[$i]) > 1) {
-							$n++;
-						}
-					}
-					if ($n == 1) {
-						$m--;
-					}
-					if ($m == 1) {
-						$n--;
-					}
-					return $m; return $n;
-				}
-				
-				function beGood($g) {
-					$k = 0;
-					$may = 0;
-					global $m, $n;
-					for ($i = 0; $i < $n; $i++) {
-						for ($j = 0; $j < $m; $j++) {
-							if (strlen ($g[$k]) == 1) {
-								$gr[$i][$j] = $g[$k];
-							}
-							if (strlen ($g[$k]) > 1) {
-								$gra = $g[$k];
-								$l = 0;
-								while (is_numeric($gra[$l])) {
-									$gr[$i][$j] = $gr[$i][$j].$gra[$l];
-									$l++;
-								}
-								$may++;
-							}
-							if ($may >= 1) {
-								if (strlen ($g[$k - 1]) > 1) {
-									$gra = $g[$k - 1];
-									$gr[$i][$j] = "";
-									for ($l = 3; $l < strlen($gra); $l++) {
-										$gr[$i][$j] = $gr[$i][$j].$gra[$l];
-									}
-									$may--;
-									$k--;
-								}
-							}
-
-							$k++;
-						}
-					}
-					return $gr;
-				}
-				function validation ($a) {
-					global $n, $m, $good;
-					if ($n != $m && $n > 0 && $m > 0) {
-						echo "<p>Матрица введена не полностью</p>";
-						$good--;
-					}
-					for ($i = 0; $i < $n; $i++) {
-						for ($j = 0; $j < $n; $j++) {
-							if (!is_numeric($a[$i][$j]) || ($a[$i][$j] != 0 && $a[$i][$j] != 1)) {
-								echo "<p>Некорректный элемент ".$i." строки ".$j." столбца</p>";
-								$good--;
-							}
-						}
-					}
-					return $good;
-				}
-				function attainability ($a) {
-					global $n;
-					for ($i = 0; $i < $n; $i++) {
-						for ($j = 0; $j < $n; $j++) {
-							$w[$i][$j] = $a[$i][$j];
-						}
-					}
-					for ($k = 0; $k < $n; $k++) {
-						echo "<br>W<sub>".($k + 1)."</sub>";
-						if ($k + 1 == $n) {
-							echo " = M<sup>*</sup>";
-						}
-						echo "<br>";
-						for ($i = 0; $i < $n; $i++) {
-							if ($w[$i][$k] == 0) {
-								for ($j = 0; $j < $n; $j++) {
-									$w[$i][$j] = $w[$i][$j];
-									echo $w[$i][$j]." ";
-								}
-							}
-							if ($w[$i][$k] == 1) {
-								for ($j = 0; $j < $n; $j++) {
-									$w[$i][$j] = $w[$k][$j] + $w[$i][$j];
-									if ($w[$i][$j] > 1) {
-										$w[$i][$j] = 1;
-									}
-									echo $w[$i][$j]." ";
-								}
-							}
-							echo "<br>";
-						}
-					}
-					return $w;
-				}
-			?>
+		<p>Возможные примеры:</p>
+		<div class = "test">
+       		<div>Первый пример<br>
+			   	0 1 0 0<br>
+				1 0 1 1<br>
+				0 1 0 0<br>
+				0 1 0 0<br>
+        	</div>
+        	<div>Второй пример<br>
+        		0 1 0 1<br>
+        		1 0 1 0<br>
+        		0 1 0 1<br>
+        		1 0 1 0<br>
+        	</div>
+        	<div>Третий пример<br>
+        		0 1 1 1<br>
+        		1 0 0 0<br>
+        		1 0 0 0<br>
+        		1 0 0 0<br>
+        	</div>
 		</div>
-	</body>
+
+		<div class = "code">
+        <?php
+            $stroka;
+            $stolbec;
+            $flagMatrix = 0;
+	        $flagMatrix1 = 0;
+            $matrix = explode("\r\n", $_POST['matrix']);
+
+            for ($i = 0; $i < 4; $i++) {
+                for($j = 0; $j < 4; $j++){
+                    $mass[$i] = explode(" ", $matrix[$i]);
+                }
+            }
+
+            if((implode("",$matrix) == "")){
+                echo("Введите логическую матрицу");
+            } else { 
+                Output($mass);
+                validation($mass);
+                if ($flagMatrix == 0 && $flagMatrix1 == 0) {
+                    findMatrixOfReachability($mass);
+                }
+                elseif ($flagMatrix == 0 || $flagMatrix1 != 0) {
+                    echo("Введите неориентированную матрицу <br>");
+                    echo("Ошибка в строке ".$stroka." и в ".$stolbec." столбце");
+                }
+                elseif ($flagMatrix != 0 || $flagMatrix1 == 0) {
+                    echo("Введите верно логическую матрицу <br>");
+                    echo("Ошибка в строке ".$stroka." и в ".$stolbec." столбце");
+                }
+            }
+
+	      
+	    /**
+		*Валидация(проверка каждого символа на соответствие заданию) могут быть введены только 0 и 1, строгая матрица 4 на 4, строго неориентированная матрица;
+		*@global $flagMatrix, $flagMatrix1, $stroka, $stolbec;
+        *@param $mass;
+	    */
+            function validation($mass){
+                global $flagMatrix, $stroka, $stolbec, $flagMatrix1;
+
+                if(count($mass) != 4){
+                    $flagMatrix++;
+                }
+                for ($i = 0; $i < 4; $i++) { 
+                    if(count($mass[$i]) != 4){
+                        $flagMatrix++;
+                    }
+                }
+                for ($i = 0; $i < 4; $i++) {
+                    for ($j=0; $j < 4; $j++) { 
+                        if($mass[$i][$j] != "1" && $mass[$i][$j] != "0"){
+                            $flagMatrix++;
+                            $stroka = $i;
+                            $stolbec = $j;
+                        }
+                    }
+                }
+                for ($i = 0; $i < 4; $i++) {
+                    for ($j = 0; $j < 4; $j++) { 
+                        if($mass[$i][$i] != "0"){
+                            $flagMatrix++;
+                        }
+                    }
+                }
+                /*проверка на неорграф*/ 
+                for ($i = 0; $i < 4; $i++) {
+					for ($j = 0; $j < 4; $j++) {
+						if($mass[$i][$j] != $mass[$j][$i]){
+							$flagMatrix1++;	
+                            $stroka = $i;
+                            $stolbec = $j;					
+						}
+					}
+				}
+
+            }
+		/** 
+			*функция в которой происходит вычисление матрицы достижимости путом алгоритма Флойда-Уоршелла и вывод этой матрицы на 			 страницу
+			*@global 
+            *@param $mass;
+			
+		**/
+            function findMatrixOfReachability($mass){
+
+                echo "Матрица достижимости <br>";
+                /*w копия масс*/
+                for ($i = 0; $i < 4; $i++) {
+                    for ($j = 0; $j < 4; $j++) {
+                        $w[$i][$j] = $mass[$i][$j];
+                    }
+                }
+                /* */
+                for ($k = 0; $k < 4; $k++) {
+                    for ($i = 0; $i < 4; $i++) {
+                        if ($w[$i][$k] == 0) {
+                            for ($j = 0; $j < 4; $j++) {
+                                $w[$i][$j] = $w[$i][$j];
+                                /*echo("текущий элемен".$w);
+                                echo("i=".$i."j=".$j."<br>");*/
+                            }
+                        }
+                        if ($w[$i][$k] == 1) {
+                            for ($j = 0; $j < 4; $j++) {
+                                $w[$i][$j] = $w[$k][$j] + $w[$i][$j];
+                                if ($w[$i][$j] > 1) {
+                                    /*echo("текущий элемен".$w);
+                                    echo("i=".$i."j=".$j."<br>");*/
+                                    $w[$i][$j] = 1;
+                                }
+                            
+                            }
+                        }
+                    }
+                }
+                for ($i = 0; $i < 4; $i++) { 
+                    for ($j = 0; $j < 4; $j++) { 
+                        echo " ".$w[$i][$j];
+                    }
+                    echo"<br>";
+                }
+                    
+            }
+		/**
+		*Вывод нашей матрицы достижимости на страницу;
+		*@global  
+        *@param $mass;
+		*/
+            function Output($mass){
+                echo "<br>"."Ваша матрица"."<br>";
+                for ($i = 0; $i < 4; $i++) { 
+                    for ($j = 0; $j < 4; $j++) { 
+                        echo( " ".$mass[$i][$j]);
+                    }
+                    echo"<br>";
+                }
+            }
+        ?>
+    </div>
+</body>
 </html>
